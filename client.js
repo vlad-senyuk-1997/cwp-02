@@ -1,10 +1,11 @@
 // client.js
 const net = require('net');
 const port = 8124;
-
 const client = new net.Socket();
-
 const requestString = '\r\nQA\r\n';
+let json = require("./qa.json");
+
+function 
 
 client.setEncoding('utf8');
 
