@@ -24,7 +24,7 @@ const server = net.createServer((client) => {
                 client.write(ascString);
                 log(client.id + " : " + ascString, "./client_id.log");
             }else{
-                const flag = 1;
+                const flag = getRandomInt(0, 1);
                 if (flag === 0){
                     client.write(decString);
                     log(client.id + " : " + decString, "./client_id.log");
