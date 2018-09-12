@@ -5,6 +5,15 @@ const requestString = '\r\nFILES\r\n';
 const ascString = '\r\nASC\r\n';
 const decString = '\r\nDEC\r\n';
 
+function getArguments() {
+    let files = [];
+
+    for (let i = 2; i < process.argv.length; i++)
+        files.push(process.argv[i]);
+
+    return files;
+}
+
 client.setEncoding('utf8');
 
 client.connect(port, function() {
