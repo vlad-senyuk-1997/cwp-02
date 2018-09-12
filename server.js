@@ -10,6 +10,8 @@ let seed = 0;
 
 const requestFilesString = '\r\nFILES\r\n';
 
+const fs = require("fs");
+
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -27,6 +29,11 @@ const server = net.createServer((client) => {
                 log(client.id + " : " + ascString, "./client_id.log");
             }else if(data === requestFilesString){
                 client.write(ascString);
+                client.on('data', (data) => {
+                    for (let item of data){
+                        console.log(item);
+                    }
+                });
             }else{
                 const flag = getRandomInt(0, 1);
                 if (flag === 0){
