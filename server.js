@@ -5,7 +5,10 @@ const requestString = '\r\nQA\r\n';
 const ascString = '\r\nASC\r\n';
 const decString = '\r\nDEC\r\n';
 const json = require("./qa.json");
-var log = require('log-to-file');
+const log = require('log-to-file');
+let seed = 0;
+
+const requestFilesString = '\r\nFILES\r\n';
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -14,7 +17,6 @@ function getRandomInt(min, max) {
 const server = net.createServer((client) => {
         console.log('Client connected');
 
-        let seed = 0;
         client.id = Date.now() + seed++;
 
     client.setEncoding('utf8');
@@ -23,6 +25,8 @@ const server = net.createServer((client) => {
             if (data === requestString){
                 client.write(ascString);
                 log(client.id + " : " + ascString, "./client_id.log");
+            }else if(data === requestFilesString){
+                client.write(ascString);
             }else{
                 const flag = getRandomInt(0, 1);
                 if (flag === 0){
