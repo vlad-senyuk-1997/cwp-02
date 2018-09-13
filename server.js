@@ -11,9 +11,18 @@ let seed = 0;
 const requestFilesString = '\r\nFILES\r\n';
 
 const fs = require("fs");
+const Buffer = require('buffer').Buffer;
+const PATH = "./files/";
+const MAX_CONNECTIONS = 3;
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function makeDir(path){
+    fs.mkdir(path, function(error){
+        if(error) throw error;
+    });
 }
 
 const server = net.createServer((client) => {
@@ -21,7 +30,7 @@ const server = net.createServer((client) => {
 
         client.id = Date.now() + seed++;
 
-    client.setEncoding('utf8');
+        client.setEncoding('utf8');
 
         client.on('data', (data) => {
             if (data === requestString){
@@ -29,13 +38,22 @@ const server = net.createServer((client) => {
                 log(client.id + " : " + ascString, "./client_id.log");
             }else if(data === requestFilesString){
                 client.write(ascString);
-                client.on('data', (data) => {
-                    for (let item of data){
-                        console.log(item);
+            }else{
+                let arr = JSON.parse(data);
+                let dir = PATH + client.id;
+                makeDir(dir);
+                arr.forEach((f)=>{
+                    if (fs.lstatSync(f).isFile()){
+                        fs.copyFile(f, dir + "/" + f.split("/").pop(), (error)=>{
+                            if (error)
+                                console.log(error);
+                        });
                     }
                 });
-            }else{
-                const flag = getRandomInt(0, 1);
+
+                client.write(decString);
+
+                /*const flag = getRandomInt(0, 1);
                 if (flag === 0){
                     client.write(decString);
                     log(client.id + " : " + decString, "./client_id.log");
@@ -47,7 +65,7 @@ const server = net.createServer((client) => {
                             log(client.id + " : " + item["response"], "./client_id.log");
                         }
                     });
-                }
+                }*/
             }
 });
 

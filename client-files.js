@@ -30,18 +30,25 @@ client.connect(port, function() {
 client.on('data', function(data) {
     if (data === ascString){
         let files = getArguments();
+        console.log(files);
 
         files.forEach((item)=>{
             if (fs.lstatSync(item).isDirectory()){
                 fs.readdir(item, (err, fls) => {
-                    const buf = Buffer.from(fls);
-                    console.log(buf.toString('utf8'));
+                    if (err)
+                        console.log(err);
+
+                    let arr = [];
+                    for (let i of fls){
+                        arr.push(item + "/" + i);
+                    }
+
+                    console.log(arr);
+                    const buf = JSON.stringify(arr);
                     client.write(buf);
                 });
             }
         });
-
-        client.destroy();
 
     }else if (data === decString){
         client.destroy();
